@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if list_type %}
+        <h2>Список профессий</h2>
+        <{{ list_type }} class="list-group{{ ' list-group-numbered' if list_type == 'ol' else '' }}">
+            {% for profession in professions %}
+                <li class="list-group-item">{{ profession }}</li>
+            {% endfor %}
+        </{{ list_type }}>
+    {% else %}
+        <div class="alert alert-danger" role="alert">
+            Введен неверный параметр, возможные варианты - "ol" или "ul"
+        </div>
+    {% endif %}
+{% endblock %}

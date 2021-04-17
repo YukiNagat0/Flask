@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <ul class="list-group">
+        {% for item, value in form.items() %}
+            <li class="list-group-item">{{ item }}: {{ value }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if not(image and color) %}
+        <div class="alert alert-danger" role="alert">
+            Неправильный ввод параметров
+        </div>
+    {% else %}
+        <h1 class="text-center">Оформление каюты</h1>
+        <table class="table-bordered custom-table" style="margin-left: auto; margin-right: auto">
+            <thead>
+                <tr class="table-secondary">
+                    <th scope="col" class="text-center">Цвет стен</th>
+                    <th scope="col" class="text-center">Эмблема</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="background-color: {{ color }}"></td>
+                    <td><img src="{{ image }}"></td>
+                </tr>
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

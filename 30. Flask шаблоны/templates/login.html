@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% macro error_output(object) %}
+    {% for error in object.errors %}
+        <div class="alert alert-danger mt-1" role="alert">
+            {{ error }}
+        </div>
+    {% endfor %}
+{% endmacro %}
+
+{% block content %}
+    <div class="d-flex flex-row mb-3">
+        <img class="me-3" src="{{ url_for('static', filename='img/emblem.png') }}">
+        <h2 class="align-self-center">Аварийный доступ</h2>
+    </div>
+    <form action="" method="post" novalidate>
+        {{ form.csrf_token }}
+        <div class="mb-3">
+            <label for="inputAstronautId" class="form-label">{{ form.astronaut_id.label }}</label>
+            {{ form.astronaut_id(class="form-control", id="inputAstronautId") }}
+            {{ error_output(form.astronaut_id) }}
+        </div>
+        <div class="mb-3">
+            <label for="inputAstronautPassword" class="form-label">{{ form.astronaut_password.label }}</label>
+            {{ form.astronaut_password(class="form-control", id="inputAstronautPassword") }}
+            {{ error_output(form.astronaut_password) }}
+        </div>
+        <div class="mb-3">
+            <label for="inputCapitanId" class="form-label">{{ form.capitan_id.label}}</label>
+            {{ form.capitan_id(class="form-control", id="inputCapitanId") }}
+            {{ error_output(form.capitan_id) }}
+        </div>
+        <div class="mb-3">
+            <label for="inputCapitanPassword" class="form-label">{{ form.capitan_password.label }}</label>
+            {{ form.capitan_password(class="form-control", id="inputCapitanPassword") }}
+            {{ error_output(form.capitan_password) }}
+        </div>
+        {{ form.submit(type="submit", class="btn btn-primary") }}
+    </form>
+{% endblock %}

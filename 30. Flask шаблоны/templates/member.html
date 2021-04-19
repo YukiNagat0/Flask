@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% set member = members|random %}
+
+{% block content %}
+    <div class="d-flex justify-content-center">
+        <h1>{{ member['name'] }} {{ member['surname'] }}</h1>
+    </div>
+    <div class="d-flex justify-content-center">
+        {% set member_photo = url_for('static', filename='img/' ~ member['photo']) %}
+        <img src="{{ member_photo }}">
+    </div>
+    <div class="d-flex justify-content-center">
+        <p>{{ member['professions']|join(', ') }}</p>
+    </div>
+{% endblock %}

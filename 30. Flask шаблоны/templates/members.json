@@ -1,0 +1,55 @@
+[
+  {
+    "name": "Ридли",
+    "surname": "Скотт",
+    "photo": "photo.jpg",
+    "professions": [
+      "Капитан корабля"
+    ]
+  },
+  {
+    "name": "Энди",
+    "surname": "Уир",
+    "photo": "photo.jpg",
+    "professions": [
+      "астрогеолог",
+      "специалист по радиационной защите"
+    ]
+  },
+  {
+    "name": "Марк",
+    "surname": "Уотни",
+    "photo": "photo.jpg",
+    "professions": [
+      "инженер-исследователь",
+      "пилот"
+    ]
+  },
+  {
+    "name": "Венката",
+    "surname": "Капур",
+    "photo": "photo.jpg",
+    "professions": [
+      "климатолог",
+      "астрогеолог"
+    ]
+  },
+  {
+    "name": "Тедди",
+    "surname": "Сандерс",
+    "photo": "photo.jpg",
+    "professions": [
+      "врач",
+      "пилот дронов"
+    ]
+  },
+  {
+    "name": "Шон",
+    "surname": "Бин",
+    "photo": "photo.jpg",
+    "professions": [
+      "штурман",
+      "метеоролог"
+    ]
+  }
+]

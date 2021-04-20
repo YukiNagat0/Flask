@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div id="MarsLandscapes" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#MarsLandscapes" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+
+            {% for i in range(1, n) %}
+                <button type="button" data-bs-target="#MarsLandscapes" data-bs-slide-to="{{ i }}" aria-label="Slide {{ loop.index }}"></button>
+            {% endfor %}
+        </div>
+
+        <div class="carousel-inner">
+            {% for i in range(1, n + 1) %}
+                {% set image_url = url_for('static', filename='img/marsLandscapes/MarsLandscape' ~ i ~ '.jpg') %}
+                <div class="carousel-item{{ ' active' if loop.first else '' }}">
+                    <img src="{{ image_url }}" class="d-block w-100">
+                </div>
+            {% endfor %}
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#MarsLandscapes" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#MarsLandscapes" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="jpg_photo" class="form-label">Добавить картинку</label>
+            <input type="file" class="form-control" id="jpg_photo" name="file" accept=".jpg">
+        </div>
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+{% endblock %}

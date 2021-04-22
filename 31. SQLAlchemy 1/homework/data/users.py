@@ -1,4 +1,5 @@
 import sqlalchemy as sa
+from sqlalchemy import orm
 
 from .db_session import SqlAlchemyBase
 
@@ -16,3 +17,5 @@ class User(SqlAlchemyBase):
     email = sa.Column(sa.String, unique=True)
     hashed_password = sa.Column(sa.String)
     modified_date = sa.Column(sa.DateTime)
+
+    jobs = orm.relationship('Jobs', back_populates='team_leader')

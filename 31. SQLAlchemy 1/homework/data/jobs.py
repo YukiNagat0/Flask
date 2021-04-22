@@ -18,3 +18,6 @@ class Jobs(SqlAlchemyBase):
     start_date = sa.Column(sa.DateTime)
     end_date = sa.Column(sa.DateTime)
     is_finished = sa.Column(sa.Boolean)
+
+    def __repr__(self):
+        return f'<Job> {self.job}'

@@ -1,8 +1,10 @@
+import datetime
 from typing import List
 
 from data import db_session
 
 from data.users import User
+from data.jobs import Jobs
 
 DATABASE = 'db/mars_explorer.db'
 
@@ -45,6 +47,17 @@ MEMBERS = [
     }
 ]
 
+JOBS = [
+    {
+        'team_leader_id': 1,
+        'job': 'deployment of residential modules 1 and 2',
+        'work_size': 15,
+        'collaborators': '2, 3',
+        'start_date': datetime.datetime.now(),
+        'is_finished': False
+    }
+]
+
 
 def add_users(users: List[dict]):
     db_sess = db_session.create_session()
@@ -62,10 +75,22 @@ def add_users(users: List[dict]):
     db_sess.close()
 
 
+def add_jobs(jobs: List[dict]):
+    db_sess = db_session.create_session()
+
+    for job in jobs:
+        job_object = Jobs(**job)
+        db_sess.add(job_object)
+
+    db_sess.commit()
+    db_sess.close()
+
+
 def main():
     db_session.global_init(DATABASE)
 
     # add_users(MEMBERS)
+    # add_jobs(JOBS)
 
 
 if __name__ == '__main__':

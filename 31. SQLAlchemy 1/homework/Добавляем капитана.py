@@ -4,7 +4,7 @@ from data import db_session
 
 from data.users import User
 
-DATABASE = 'db/blogs.db'
+DATABASE = 'db/mars_explorer.db'
 MEMBERS = [
     {
         'surname': 'Scott',

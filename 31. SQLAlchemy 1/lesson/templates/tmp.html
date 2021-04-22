@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <title>Проверка</title>
+    </head>
+    <body>
+        {% for i in range(10) %}
+            <h2>i - {{ i }}, индекс с 1 - {{ loop.index }}, индекс с 0 {{ loop.index0 }}, Первая итерация - {{ loop.first }}, Последняя итерация - {{ loop.last }}</h2>
+        {% endfor %}
+    </body>
+</html>

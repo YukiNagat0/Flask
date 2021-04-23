@@ -20,5 +20,7 @@ class User(SqlAlchemyBase):
 
     jobs = orm.relationship('Jobs', back_populates='team_leader')
 
+    departments = orm.relationship('Department', back_populates='chief_object')
+
     def __repr__(self):
         return f'<Colonist> {self.id} {self.surname} {self.name}'

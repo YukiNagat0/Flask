@@ -1,7 +1,10 @@
 import datetime
 from typing import List
 
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
+from flask_wtf.csrf import CSRFProtect
+
+from forms.registration_form import RegistrationForm
 
 from data import db_session
 
@@ -9,6 +12,9 @@ from data.users import User
 from data.jobs import Jobs
 
 app = Flask(__name__)
+
+app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+csrf = CSRFProtect(app)
 
 DATABASE = 'db/mars_explorer.db'
 
@@ -97,6 +103,36 @@ def index():
     jobs = db_sess.query(Jobs).all()
 
     return render_template('journal.html', jobs=jobs)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+
+        if db_sess.query(User).filter(User.email == form.email.data).first():
+            return render_template('registration.html', title='Регистрация', form=form,
+                                   message='Такой пользователь уже зарегистрирован.')
+
+        user = User(
+            email=form.email.data,
+            surname=form.surname.data,
+            name=form.name.data,
+            age=form.age.data,
+            position=form.position.data,
+            speciality=form.speciality.data,
+            address=form.address.data,
+        )
+        user.set_password(form.password_1.data)
+
+        db_sess.add(user)
+        db_sess.commit()
+        db_sess.close()
+
+        return redirect('/login')
+
+    return render_template('registration.html', title='Регистрация', form=form)
 
 
 def main():

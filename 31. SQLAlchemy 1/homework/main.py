@@ -1,10 +1,14 @@
 import datetime
 from typing import List
 
+from flask import Flask, render_template
+
 from data import db_session
 
 from data.users import User
 from data.jobs import Jobs
+
+app = Flask(__name__)
 
 DATABASE = 'db/mars_explorer.db'
 
@@ -86,11 +90,22 @@ def add_jobs(jobs: List[dict]):
     db_sess.close()
 
 
+@app.route('/journal')
+def index():
+    db_sess = db_session.create_session()
+
+    jobs = db_sess.query(Jobs).all()
+
+    return render_template('journal.html', jobs=jobs)
+
+
 def main():
     db_session.global_init(DATABASE)
 
     # add_users(MEMBERS)
     # add_jobs(JOBS)
+
+    app.run('127.0.0.1', 8080)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% macro show_errors(error_object) %}
+    {% for error in error_object %}
+        <p class="alert alert-danger" role="alert">
+            {{ error }}
+        </p>
+    {% endfor %}
+{% endmacro %}
+
+{% block content %}
+    <h1 class="text-center">Регистрация</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.email.label }}<br>
+            {{ form.email(class="form-control", type="email") }}<br>
+            {{ show_errors(form.email.errors) }}
+        </p>
+        <p>
+            {{ form.password.label }}<br>
+            {{ form.password(class="form-control", type="password") }}<br>
+            {{ show_errors(form.password.errors) }}
+        </p>
+        <p>
+            {{ form.password_again.label }}<br>
+            {{ form.password_again(class="form-control", type="password") }}<br>
+            {{ show_errors(form.password_again.errors) }}
+        </p>
+        <p>
+            {{ form.name.label }}<br>
+            {{ form.name(class="form-control") }}<br>
+            {{ show_errors(form.name.errors) }}
+        </p>
+        <p>
+            {{ form.about.label }}<br>
+            {{ form.about(class="form-control") }}<br>
+            {{ show_errors(form.about.errors) }}
+        </p>
+
+        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+
+        {{ message }}
+    </form>
+{% endblock %}

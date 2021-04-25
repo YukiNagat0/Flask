@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% macro show_errors(error_object) %}
+    {% for error in error_object %}
+        <div class="alert alert-danger mt-1 mb-0" role="alert">
+            {{ error }}
+        </div>
+    {% endfor %}
+{% endmacro %}
+
+{% block content %}
+    <h1 class="text-center mb-3 fw-light">Login</h1>
+    <div class="card">
+        <div class="card-body">
+            <form action="" method="post">
+                {{ form.hidden_tag() }}
+                <div class="mb-2">
+                    {{ form.email.label(class="form-label", for="emailInput") }}
+                    {{ form.email(class="form-control", type="email", id="emailInput") }}
+                    {{ show_errors(form.email.errors) }}
+                </div>
+
+                <div class="mb-2">
+                    {{ form.email.label(class="form-label", for="passwordInput") }}
+                    {{ form.password(class="form-control", type="password", id="passwordInput") }}
+                    {{ show_errors(form.password.errors) }}
+                </div>
+
+                <div class="mb-3 form-check">
+                    {{ form.remember_me(class="form-check-input", type="checkbox", id="checkInput") }}
+                    {{ form.remember_me.label(class="form-check-label", for="checkInput") }}
+                </div>
+
+                {{ form.submit(class="btn btn-primary", type="submit") }}
+
+                {% if message %}
+                    <div class="alert alert-danger mt-2 mb-0" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% macro show_errors(error_object) %}
+    {% for error in error_object %}
+        <div class="alert alert-danger mt-1 mb-0" role="alert">
+            {{ error }}
+        </div>
+    {% endfor %}
+{% endmacro %}
+
+{% block content %}
+    <h1 class="text-center mb-3 fw-light">Registration</h1>
+    <div class="card">
+        <div class="card-body">
+            <form action="" method="post">
+                {{ form.hidden_tag() }}
+                <div class="mb-2">
+                    {{ form.email.label(class="form-label", for="emailInput") }}
+                    {{ form.email(class="form-control", type="email", id="emailInput") }}
+                    {{ show_errors(form.email.errors) }}
+                </div>
+
+                <div class="mb-2">
+                    {{ form.password_1.label(class="form-label", for="password1Input") }}
+                    {{ form.password_1(class="form-control", type="password", id="password1Input") }}
+                    {{ show_errors(form.password_1.errors) }}
+                </div>
+
+                <div class="mb-2">
+                    {{ form.password_2.label(class="form-label", for="password1Input") }}
+                    {{ form.password_2(class="form-control", type="password", id="password2Input") }}
+                    {{ show_errors(form.password_2.errors) }}
+                </div>
+
+                <div class="mb-2">
+                    {{ form.surname.label(class="form-label", for="surnameInput") }}
+                    {{ form.surname(class="form-control", id="surnameInput") }}
+                    {{ show_errors(form.surname.errors) }}
+                </div>
+
+                <div class="mb-2">
+                    {{ form.name.label(class="form-label", for="nameInput") }}
+                    {{ form.name(class="form-control", id="nameInput") }}
+                    {{ show_errors(form.name.errors) }}
+                </div>
+
+                <div class="mb-2">
+                    {{ form.age.label(class="form-label", for="ageInput") }}
+                    {{ form.age(class="form-control", id="ageInput") }}
+                    {{ show_errors(form.age.errors) }}
+                </div>
+
+                <div class="mb-2">
+                    {{ form.position.label(class="form-label", for="positionInput") }}
+                    {{ form.position(class="form-control", id="positionInput") }}
+                    {{ show_errors(form.position.errors) }}
+                </div>
+
+                <div class="mb-2">
+                    {{ form.speciality.label(class="form-label", for="specialityInput") }}
+                    {{ form.speciality(class="form-control", id="specialityInput") }}
+                    {{ show_errors(form.speciality.errors) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.address.label(class="form-label", for="addressInput") }}
+                    {{ form.address(class="form-control", id="addressInput") }}
+                    {{ show_errors(form.address.errors) }}
+                </div>
+
+                {{ form.submit(class="btn btn-primary", type="submit") }}
+
+                {% if message %}
+                    <div class="alert alert-danger mt-2 mb-0" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+{% endblock %}

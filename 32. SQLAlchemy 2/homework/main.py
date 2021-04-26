@@ -1,8 +1,16 @@
+# email ; password
+# scott_chief@mars.org ; chief
+# Andy@mars.org ; Andy
+# Watney@mars.org ; Watney
+# Bean@mars.org ; Bean
+
+from typing import Union
+
 import datetime
 
 import re
 
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request, abort
 from flask_wtf import CSRFProtect
 
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
@@ -46,8 +54,11 @@ def check_users_ids_existence(*users_ids):
     return True, None
 
 
-def validate_and_edit_job_and_return_view(form: EditJobForm, current_user_id: int, can_set_team_leader_id: bool):
+def validate_and_edit_job_and_return_view(form: EditJobForm, job: Union[Jobs, None], params: dict):
     """ Проверяет правильность формы добавления/редактирования job, добавляет job в базу данных, возвращает страницу """
+    current_user_id = current_user.id
+    can_set_team_leader_id = current_user_id == 1
+
     job_title = form.job.data
     team_leader_id = form.team_leader_id.data  # пустая строка, если current_user != 1 или капитан ничего не ввел
     work_size = form.work_size.data
@@ -58,7 +69,7 @@ def validate_and_edit_job_and_return_view(form: EditJobForm, current_user_id: in
         # Человек в качестве тимлида может указать только себя. Только капитан может назначать тим-лидов.
         if can_set_team_leader_id:
             # вдруг капитан плохой человек и ввел несуществующий или некорректный team_leader_id
-            if not (team_leader_id and re.fullmatch('^[1-9]\d*$', team_leader_id)):
+            if not (team_leader_id and re.fullmatch('^[1-9]\d*$', str(team_leader_id))):
                 raise UserIdError('Team leader id должен быть натуральным числом.')
 
             team_leader_id = int(team_leader_id)
@@ -79,23 +90,39 @@ def validate_and_edit_job_and_return_view(form: EditJobForm, current_user_id: in
     except Exception as e:
         message = f'Непредвиденная ошибка "{type(e).__name__}: {e}". Обратитесь в службу поддержки.'
     else:
-        job = Jobs()
+        if not job:
+            # Добавление job
 
-        job.job = job_title
-        job.team_leader_id = team_leader_id
-        job.work_size = work_size
-        job.collaborators = collaborators
-        job.is_finished = is_finished
+            job = Jobs()
 
-        db_sess = db_session.create_session()
-        team_leader_ = db_sess.query(Users).filter(Users.id == team_leader_id).first()
-        team_leader_.jobs.append(job)
-        db_sess.commit()
-        db_sess.close()
+            job.job = job_title
+            job.team_leader_id = team_leader_id
+            job.work_size = work_size
+            job.collaborators = collaborators
+            job.is_finished = is_finished
+
+            db_sess = db_session.create_session()
+            team_leader_ = db_sess.query(Users).filter(Users.id == team_leader_id).first()
+            team_leader_.jobs.append(job)
+            db_sess.commit()
+            db_sess.close()
+        else:
+            # Редактирование job
+
+            job.job = job_title
+            job.team_leader_id = team_leader_id
+            job.work_size = work_size
+            job.collaborators = collaborators
+            job.is_finished = is_finished
+
+            db_sess = db_session.create_session()
+            db_sess.merge(job)
+            db_sess.commit()
+            db_sess.close()
 
         return redirect('/')
 
-    return render_template('edit_job.html', title='Adding a job', action_type='Adding a job',
+    return render_template('edit_job.html', **params,
                            form=form, can_set_team_leader_id=can_set_team_leader_id, message=message)
 
 
@@ -177,15 +204,73 @@ def logout():
 @app.route('/add_job', methods=['GET', 'POST'])
 @login_required
 def add_job():
+    params = {'title': 'Adding a job', 'action_type': 'Adding a job', 'submit_text': 'Add'}
+
     current_user_id = current_user.id
     can_set_team_leader_id = current_user_id == 1
 
     form = EditJobForm()
     if form.validate_on_submit():
-        return validate_and_edit_job_and_return_view(form, current_user_id, can_set_team_leader_id)
+        return validate_and_edit_job_and_return_view(form, None, params)
 
-    return render_template('edit_job.html', title='Adding a job', action_type='Adding a job',
+    return render_template('edit_job.html', **params,
                            form=form, can_set_team_leader_id=can_set_team_leader_id)
+
+
+@app.route('/edit_job/<int:job_id>', methods=['GET', 'POST'])
+@login_required
+def edit_job(job_id):
+    params = {'title': 'Editing a job', 'action_type': 'Editing a job', 'submit_text': 'Edit'}
+
+    current_user_id = current_user.id
+    can_set_team_leader_id = current_user_id == 1
+
+    form = EditJobForm()
+
+    db_sess = db_session.create_session()
+    if can_set_team_leader_id:
+        job = db_sess.query(Jobs).filter(Jobs.id == job_id).first()
+    else:
+        job = db_sess.query(Jobs).filter(Jobs.id == job_id, Jobs.team_leader == current_user).first()
+    db_sess.close()
+
+    if request.method == 'GET':
+        if job:
+            form.job.data = job.job
+            form.team_leader_id.data = job.team_leader_id
+            form.work_size.data = job.work_size
+            form.collaborators.data = job.collaborators
+            form.is_finished.data = job.is_finished
+        else:
+            abort(404)
+    elif form.validate_on_submit():
+        if job:
+            return validate_and_edit_job_and_return_view(form, job, params)
+        else:
+            abort(404)
+
+    return render_template('edit_job.html', **params,
+                           form=form, can_set_team_leader_id=can_set_team_leader_id)
+
+
+@app.route('/delete_job/<int:job_id>')
+@login_required
+def delete_job(job_id):
+    db_sess = db_session.create_session()
+    if current_user.id == 1:
+        job = db_sess.query(Jobs).filter(Jobs.id == job_id).first()
+    else:
+        job = db_sess.query(Jobs).filter(Jobs.id == job_id, Jobs.team_leader == current_user).first()
+
+    if job:
+        db_sess.delete(job)
+        db_sess.commit()
+    else:
+        db_sess.close()
+        abort(404)
+
+    db_sess.close()
+    return redirect('/')
 
 
 def main():

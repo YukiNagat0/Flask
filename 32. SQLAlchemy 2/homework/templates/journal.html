@@ -2,7 +2,9 @@
 
 {% block content %}
     <h1 class="text-center mb-3 fw-light">Works log</h1>
-    <a class="btn btn-outline-primary mb-3" href="/add_job">Add a job</a>
+    {% if current_user.is_authenticated %}
+        <a class="btn btn-outline-primary mb-3" href="/add_job">Add a job</a>
+    {% endif %}
     {% for job in jobs %}
         <div class="card mb-3">
             <div class="card-body">
@@ -31,6 +33,12 @@
                     </tr>
                     </tbody>
                 </table>
+                {% if current_user.is_authenticated and (job.team_leader == current_user or current_user.id == 1) %}
+                    <div class="mt-2 mb-0">
+                        <a class="btn btn-outline-warning" href="/edit_job/{{ job.id }}">Edit job</a>
+                        <a class="btn btn-outline-danger" href="/delete_job/{{ job.id }}">Delete job</a>
+                    </div>
+                {% endif %}
             </div>
         </div>
     {% endfor %}

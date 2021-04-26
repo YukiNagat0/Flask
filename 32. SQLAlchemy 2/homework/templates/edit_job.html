@@ -23,8 +23,7 @@
                 {% if can_set_team_leader_id %}
                     <div class="mb-2">
                         {{ form.team_leader_id.label(class="form-label", for="teamLeaderIdInput") }}
-                        {{ form.team_leader_id(class="form-control", id="teamLeaderIdInput", value=current_user.id) }}
-                        {{ show_errors(form.team_leader_id.errors) }}
+                        {{ form.team_leader_id(class="form-control", id="teamLeaderIdInput", value=current_user.id if not form.team_leader_id.data else form.team_leader_id.data) }}
                     </div>
                 {% else %}
                     <div class="mb-2">
@@ -50,7 +49,7 @@
                     {{ form.is_finished.label(class="form-check-label", for="checkInput") }}
                 </div>
 
-                {{ form.submit(class="btn btn-primary", type="submit") }}
+                {{ form.submit(class="btn btn-primary", type="submit", text="submit_text") }}
 
                 {% if message %}
                     <div class="alert alert-danger mt-2 mb-0" role="alert">

@@ -20,3 +20,20 @@ def get_jobs():
     )
     db_sess.close()
     return json_object
+
+
+@blueprint.route('/api/jobs/<int:job_id>')
+def get_job(job_id: int):
+    db_sess = db_session.create_session()
+    job = db_sess.query(Jobs).get(job_id)
+    if not job:
+        db_sess.close()
+        return jsonify({'error': 'Not found'})
+
+    json_object = jsonify(
+        {
+            'job': job.to_dict(only=Jobs.__table__.columns.keys())
+        }
+    )
+    db_sess.close()
+    return json_object

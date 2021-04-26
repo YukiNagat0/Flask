@@ -10,7 +10,7 @@ import datetime
 
 import re
 
-from flask import Flask, render_template, redirect, request, abort
+from flask import Flask, render_template, make_response, redirect, request, abort, jsonify
 from flask_wtf import CSRFProtect
 
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
@@ -37,6 +37,11 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 DATA_BASE = 'db/mars_explorers.db'
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 
 class UserIdError(Exception):

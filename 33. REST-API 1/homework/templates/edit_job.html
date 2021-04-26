@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% macro show_errors(error_object) %}
+    {% for error in error_object %}
+        <div class="alert alert-danger mt-1 mb-0" role="alert">
+            {{ error }}
+        </div>
+    {% endfor %}
+{% endmacro %}
+
+{% block content %}
+    <h1 class="text-center mb-3 fw-light">{{ action_type }}</h1>
+    <div class="card">
+        <div class="card-body">
+            <form action="" method="post">
+                {{ form.hidden_tag() }}
+                <div class="mb-2">
+                    {{ form.job.label(class="form-label", for="jobInput") }}
+                    {{ form.job(class="form-control", id="jobInput") }}
+                    {{ show_errors(form.job.errors) }}
+                </div>
+
+                {% if can_set_team_leader_id %}
+                    <div class="mb-2">
+                        {{ form.team_leader_id.label(class="form-label", for="teamLeaderIdInput") }}
+                        {{ form.team_leader_id(class="form-control", id="teamLeaderIdInput", value=current_user.id if not form.team_leader_id.data else form.team_leader_id.data) }}
+                    </div>
+                {% else %}
+                    <div class="mb-2">
+                        {{ form.team_leader_id.label(class="form-label", for="disabledTeamLeaderIdInput", text="Team leader id (only chief can set job for another user)") }}
+                        <input class="form-control" type="text" id="disabledTeamLeaderIdInput" placeholder="{{ current_user.id }}" disabled>
+                    </div>
+                {% endif %}
+
+                <div class="mb-2">
+                    {{ form.work_size.label(class="form-label", for="workSizeInput") }}
+                    {{ form.work_size(class="form-control", id="workSizeInput") }}
+                    {{ show_errors(form.work_size.errors) }}
+                </div>
+
+                <div class="mb-2">
+                    {{ form.collaborators.label(class="form-label", for="collaboratorsInput") }}
+                    {{ form.collaborators(class="form-control", id="collaboratorsInput") }}
+                    {{ show_errors(form.collaborators.errors) }}
+                </div>
+
+                <div class="mb-3 form-check">
+                    {{ form.is_finished(class="form-check-input", type="checkbox", id="checkInput") }}
+                    {{ form.is_finished.label(class="form-check-label", for="checkInput") }}
+                </div>
+
+                {{ form.submit(class="btn btn-primary", type="submit", text="submit_text") }}
+
+                {% if message %}
+                    <div class="alert alert-danger mt-2 mb-0" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+{% endblock %}

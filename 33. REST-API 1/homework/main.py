@@ -26,6 +26,8 @@ from forms.login_form import LoginForm
 from forms.registration_form import RegistrationForm
 from forms.edit_job_form import EditJobForm
 
+from tools import job_form_misc
+
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -41,7 +43,8 @@ DATA_BASE = 'db/mars_explorers.db'
 
 @app.errorhandler(404)
 def not_found(error):
-    return make_response(jsonify({'error': 'Bad request'}), 400)
+    print(error)
+    return make_response(jsonify({'error': 'Bad request'}), 404)
 
 
 class UserIdError(Exception):
@@ -233,6 +236,8 @@ def edit_job(job_id):
     can_set_team_leader_id = current_user_id == 1
 
     form = EditJobForm()
+    if not form.team_leader_id.data:  # У обычного юзера team_leader_id disabled и не отправляется на сервер (None).
+        form.team_leader_id.data = current_user_id  # пользователь об этом оповещен
 
     db_sess = db_session.create_session()
     if can_set_team_leader_id:
